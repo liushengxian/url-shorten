@@ -3,6 +3,9 @@ FROM node:22-alpine
 # Set working directory
 WORKDIR /app
 
+# Ensure proper permissions on the data directory
+RUN mkdir -p /app/data && chmod 777 /app/data
+
 # Copy package files for server and client
 COPY package*.json ./
 COPY client/package*.json ./client/
@@ -29,6 +32,9 @@ WORKDIR /app
 
 # Expose the port the app runs on
 EXPOSE 9999
+
+# Define a volume for SQLite database persistence
+VOLUME /app/data
 
 # Command to run the server
 CMD ["npm", "run", "start"]

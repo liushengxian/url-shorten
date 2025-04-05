@@ -13,6 +13,8 @@
     "express": "^4.18.2",
     "mongoose": "^7.0.0",
     "shortid": "^2.2.16",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {

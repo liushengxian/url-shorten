@@ -41,7 +41,7 @@ export default {
     async fetchLatestUrls() {
       try {
         this.loading = true;
-        const response = await axios.get('/api/latest?limit=10');
+        const response = await axios.get('/api/url/latest?limit=10');
         this.latestUrls = response.data;
         this.error = null;
       } catch (err) {
