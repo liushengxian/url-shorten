@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
-const Url = require('./models/Url');
+const Url = require('./models/Url'); // Add URL model import for MongoDB support
 require('dotenv').config(); // Load environment variables
 const sqlite3 = require('sqlite3').verbose();
 const { open } = require('sqlite');
@@ -131,6 +131,49 @@ if (DB_TYPE === 'mongodb') {
     }
   })();
 }
+
+// @route     GET /:code
+// @desc      Redirect to the original URL
+app.get('/:code', async (req, res) => {
+  try {
+    const { code } = req.params;
+    
+    // Check database type and query accordingly
+    if (process.env.DB_TYPE === 'mongodb' || mongoose.connection.readyState === 1) {
+      // MongoDB query
+      const url = await Url.findOne({ urlCode: code });
+      
+      if (!url) {
+        return res.status(404).json({ error: 'URL not found' });
+      }
+      
+      // Redirect to the long URL
+      return res.redirect(url.longUrl);
+    } else {
+      // SQLite query
+      const db = app.locals.db;
+      
+      // Check if database connection exists
+      if (!db) {
+        console.error('Database connection not available');
+        return res.status(500).json({ error: 'Database connection error' });
+      }
+      
+      // Find the URL by code
+      const url = await db.get('SELECT longUrl FROM urls WHERE urlCode = ?', [code]);
+      
+      if (!url) {
+        return res.status(404).json({ error: 'URL not found' });
+      }
+      
+      // Redirect to the long URL
+      return res.redirect(url.longUrl);
+    }
+  } catch (err) {
+    console.error('Error redirecting to URL:', err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
 
 // Define a function to set up routes AFTER the database is initialized
 function setupRoutes() {
