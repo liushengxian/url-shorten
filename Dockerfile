@@ -8,7 +8,7 @@ COPY package*.json ./
 COPY client/package*.json ./client/
 
 # Install server dependencies
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 # Copy source files needed for the build
 COPY . .
