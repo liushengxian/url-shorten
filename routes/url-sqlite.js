@@ -94,33 +94,6 @@ router.get('/latest', async (req, res) => {
   }
 });
 
-// @route     GET /api/url/:code
-// @desc      Redirect to the long URL
-router.get('/:code', async (req, res) => {
-  const db = req.app.locals.db;
-  
-  // Check if database connection exists
-  if (!db) {
-    console.error('Database connection not available');
-    return res.status(500).json({ error: 'Database connection error' });
-  }
-  
-  try {
-    const { code } = req.params;
-    
-    // Find the URL by code
-    const url = await db.get('SELECT longUrl FROM urls WHERE urlCode = ?', [code]);
-    
-    if (!url) {
-      return res.status(404).json({ error: 'URL not found' });
-    }
-    
-    // Redirect to the long URL
-    return res.redirect(url.longUrl);
-  } catch (err) {
-    console.error('Error redirecting to URL:', err);
-    return res.status(500).json({ error: 'Server error' });
-  }
-});
+// Route /:code has been moved to server.js to handle both database types
 
 module.exports = router;
