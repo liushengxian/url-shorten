@@ -39,7 +39,7 @@ COPY --from=build /app/client/dist ./client/dist
 EXPOSE 9999
 
 # Define a volume for SQLite database persistence
-VOLUME /app/data
+# VOLUME /app/data
 
 # Command to run the server
 CMD ["npm", "run", "start"]
